@@ -17,26 +17,49 @@ def sleep(t: int):
     xp.fi(inline=False)
 
 
-def get_dict_by_keys(source, keys: list, default_none: bool = True):
+def get_dict_by_keys(source, keys: list or dict, default_none: bool = True):
+    """
+    Get a dict, by keys.
+
+    :param source:
+        json_string, dict, or a object
+    :param keys:
+        list or dict
+    :param default_none:
+        whether default value is None or ignore it, when the value does not exist.
+        available only if keys is a list,
+    :return:
+        dict
+    """
     r = {}
-    if isinstance(source, dict):
-        for key in keys:
-            if key in source.keys():
-                r[key] = source[key]
-            else:
-                if default_none: r[key] = None
-    elif isinstance(source, str):
-        import json
+    if isinstance(source, str):
         try:
+            import json
             source = json.loads(source)
         except Exception:
-            pass
+            return r
         return get_dict_by_keys(source, keys=keys, default_none=default_none)
+    elif isinstance(source, dict):
+        if isinstance(keys, list):
+            for key in keys:
+                if key in source.keys():
+                    r[key] = source[key]
+                else:
+                    if default_none: r[key] = None
+        else:
+            for key, value in keys.items():
+                if key in source.keys():
+                    r[key] = source[key]
+                else:
+                    r[key] = value
     else:
-        for key in keys:
-            if default_none:
-                r[key] = getattr(source, key, None)
-            elif hasattr(source, key):
-                r[key] = getattr(source, key)
-        pass
+        if isinstance(keys, list):
+            for key in keys:
+                if default_none:
+                    r[key] = getattr(source, key, None)
+                elif hasattr(source, key):
+                    r[key] = getattr(source, key)
+        else:
+            for key, value in keys.items():
+                r[key] = getattr(source, key, value)
     return r
