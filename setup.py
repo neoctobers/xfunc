@@ -9,7 +9,7 @@ setuptools.setup(
     version="0.1.3",
     author="@neoctobers",
     author_email="neoctobers@gmail.com",
-    description="Some functions, maybe only for myself.",
+    description="Some useful functions.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/neoctobers/xfunctions",
