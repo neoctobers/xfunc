@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="xfunc",
-    version="0.1.1",
+    version="0.1.3",
     author="@neoctobers",
     author_email="neoctobers@gmail.com",
     description="Some functions, maybe only for myself.",

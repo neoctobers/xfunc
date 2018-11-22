@@ -19,9 +19,24 @@ def sleep(t: int):
 
 def get_dict_by_keys(source, keys: list, default_none: bool = True):
     r = {}
-    for key in keys:
-        if key in source.keys():
-            r[key] = source[key]
-        else:
-            if default_none: r[key] = None
+    if isinstance(source, dict):
+        for key in keys:
+            if key in source.keys():
+                r[key] = source[key]
+            else:
+                if default_none: r[key] = None
+    elif isinstance(source, str):
+        import json
+        try:
+            source = json.loads(source)
+        except Exception:
+            pass
+        return get_dict_by_keys(source, keys=keys, default_none=default_none)
+    else:
+        for key in keys:
+            if default_none:
+                r[key] = getattr(source, key, None)
+            elif hasattr(source, key):
+                r[key] = getattr(source, key)
+        pass
     return r
