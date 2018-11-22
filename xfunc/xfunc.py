@@ -17,8 +17,11 @@ def sleep(t: int):
     xp.fi(inline=False)
 
 
-def get_dict_by_keys(source, keys: list):
+def get_dict_by_keys(source, keys: list, default_none: bool = True):
     r = {}
     for key in keys:
-        if key in source.keys(): r[key] = source[key]
+        if key in source.keys():
+            r[key] = source[key]
+        else:
+            if default_none: r[key] = None
     return r
