@@ -63,3 +63,32 @@ def get_dict_by_keys(source, keys: list or dict, default_none: bool = True):
             for key, value in keys.items():
                 r[key] = getattr(source, key, value)
     return r
+
+
+def strip_in_list(the_list):
+    r = []
+    for value in the_list:
+        if isinstance(value, str):
+            r.append(value.strip())
+        else:
+            r.append(value)
+    return r
+
+
+def remove_in_list(the_list: list, ele=None):
+    ele = ele or ['', None]
+    if isinstance(ele, list):
+        for e in ele:
+            while e in the_list:
+                the_list.remove(e)
+    else:
+        while ele in the_list:
+            the_list.remove(ele)
+
+    return the_list
+
+
+def strip_and_remove_in_list(the_list: list, ele=None):
+    the_list = strip_in_list(the_list=the_list)
+    the_list = remove_in_list(the_list=the_list, ele=ele)
+    return the_list
