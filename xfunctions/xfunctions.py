@@ -92,3 +92,37 @@ def strip_and_remove_in_list(the_list: list, ele=None):
     the_list = strip_in_list(the_list=the_list)
     the_list = remove_in_list(the_list=the_list, ele=ele)
     return the_list
+
+
+def x_mix(list_in_list, i=1, target=None):
+    # results with '|||'
+    ss = []
+
+    if 1 > len(list_in_list):
+        return ss
+
+    if 1 == len(list_in_list):
+        return list_in_list[0]
+
+    if target is None:
+        target = list_in_list[0]
+
+    for s in target:
+        for e in list_in_list[i]:
+            if not e.strip():
+                r = e
+            else:
+                r = '%s|||%s' % (s, e)
+
+            if r not in ss:
+                ss.append(r)
+
+    if i < len(list_in_list) - 1:
+        return x_mix(list_in_list, i=i + 1, target=ss)
+
+    # results without '|||'
+    results = []
+    for row in ss:
+        results.append(row.split('|||'))
+
+    return results
