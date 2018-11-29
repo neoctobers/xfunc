@@ -126,3 +126,19 @@ def x_mix(list_in_list, i=1, target=None):
         results.append(row.split('|||'))
 
     return results
+
+
+def path_join(base_dir: str, paths):
+    if type(paths) not in [list, str]:
+        raise Exception('Param "paths" must be list or str.')
+
+    import os
+
+    if isinstance(paths, str):
+        return os.path.join(base_dir, paths)
+
+    r = base_dir
+    for p in paths:
+        r = os.path.join(r, p)
+
+    return r
