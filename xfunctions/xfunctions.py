@@ -144,10 +144,47 @@ def path_join(base_dir: str, paths):
     return r
 
 
-def confirm_a_django_orm_row(orm_model, source, keys):
-    # row: get_or_create, update on demand.
-    # For a model, From a obj, By Keys
+def orm_row_may_update_by_dict(row, row_dict: dict):
+    should_update = False
 
+    for key, value in row_dict.items():
+        if getattr(row, key) != value:
+            setattr(row, key, value)
+            should_update = True
+
+    if should_update:
+        row.save()
+
+    return row
+
+
+def orm_row_may_update(row, source, keys):
+    """
+    On-demand Save
+
+    :param row:     orm row
+    :param source:  source dict/object
+    :param keys:    keys/attributes
+    :return:        orm row
+    """
+
+    row_dict = get_dict_by_keys(
+        source=source,
+        keys=keys,
+    )
+
+    return orm_row_may_update_by_dict(row, row_dict)
+
+
+def orm_row_gcu(orm_model, source, keys):
+    """
+    Get_or_create, may update
+
+    :param orm_model:   orm model
+    :param source:      source dict/object
+    :param keys:        keys/attributes
+    :return:            orm row
+    """
     row_dict = get_dict_by_keys(
         source=source,
         keys=keys,
@@ -161,41 +198,4 @@ def confirm_a_django_orm_row(orm_model, source, keys):
     if created:
         return row
 
-    should_update = False
-    for key in keys:
-        if getattr(row, key) != row_dict[key]:
-            setattr(row, key, row_dict[key])
-            should_update = True
-
-    if should_update:
-        row.save()
-
-    return row
-
-
-def django_orm_row_may_update(row, source, keys):
-    """
-    On-demand Save
-
-    :param row:     django orm row
-    :param source:  source dict/object
-    :param keys:    keys/attributes
-    :return:        django orm row
-    """
-
-    row_dict = get_dict_by_keys(
-        source=source,
-        keys=keys,
-    )
-
-    should_update = False
-
-    for key in keys:
-        if getattr(row, key) != row_dict[key]:
-            setattr(row, key, row_dict[key])
-            should_update = True
-
-    if should_update:
-        row.save()
-
-    return row
+    return orm_row_may_update_by_dict(row, row_dict)
