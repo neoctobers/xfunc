@@ -15,4 +15,7 @@ xf.remove_in_list(the_list: list, ele=None)
 xf.strip_and_remove_in_list(the_list: list, ele=None)
 xf.x_mix(list_in_list, i=1, target=None)
 xf.path_join(base_dir: str, paths)
+
+xf.django_orm_row_may_update(row, source, keys)
 ```
+

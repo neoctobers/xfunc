@@ -142,3 +142,60 @@ def path_join(base_dir: str, paths):
         r = os.path.join(r, p)
 
     return r
+
+
+def confirm_a_django_orm_row(orm_model, source, keys):
+    # row: get_or_create, update on demand.
+    # For a model, From a obj, By Keys
+
+    row_dict = get_dict_by_keys(
+        source=source,
+        keys=keys,
+    )
+
+    row, created = orm_model.objects.get_or_create(
+        id=source.id,
+        defaults=row_dict,
+    )
+
+    if created:
+        return row
+
+    should_update = False
+    for key in keys:
+        if getattr(row, key) != row_dict[key]:
+            setattr(row, key, row_dict[key])
+            should_update = True
+
+    if should_update:
+        row.save()
+
+    return row
+
+
+def django_orm_row_may_update(row, source, keys):
+    """
+    On-demand Save
+
+    :param row:     django orm row
+    :param source:  source dict/object
+    :param keys:    keys/attributes
+    :return:        django orm row
+    """
+
+    row_dict = get_dict_by_keys(
+        source=source,
+        keys=keys,
+    )
+
+    should_update = False
+
+    for key in keys:
+        if getattr(row, key) != row_dict[key]:
+            setattr(row, key, row_dict[key])
+            should_update = True
+
+    if should_update:
+        row.save()
+
+    return row
