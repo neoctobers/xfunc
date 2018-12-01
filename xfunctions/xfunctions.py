@@ -176,11 +176,12 @@ def orm_row_may_update(row, source, keys):
     return orm_row_may_update_by_dict(row, row_dict)
 
 
-def orm_row_gcu(orm_model, source, keys):
+def orm_row_gcu_by_id(orm_model, id: int, source, keys):
     """
     Get_or_create, may update
 
     :param orm_model:   orm model
+    :param id:          id
     :param source:      source dict/object
     :param keys:        keys/attributes
     :return:            orm row
@@ -191,7 +192,7 @@ def orm_row_gcu(orm_model, source, keys):
     )
 
     row, created = orm_model.objects.get_or_create(
-        id=source.id,
+        id=id,
         defaults=row_dict,
     )
 
