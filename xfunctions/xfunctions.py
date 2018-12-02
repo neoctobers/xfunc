@@ -254,3 +254,12 @@ def re_find_http_urls(string: str):
 
 def markdown_right(s, width: int = 19):
     return '`{s}`'.format(s=s.rjust(width))
+
+
+def md5(s: str):
+    import hashlib
+
+    f = hashlib.md5()
+    f.update(s.encode(encoding='utf-8'))
+
+    return f.hexdigest()
