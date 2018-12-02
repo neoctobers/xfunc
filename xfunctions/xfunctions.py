@@ -54,6 +54,27 @@ def list_strip_and_remove(source: list, els=None):
     return source
 
 
+def path_to(base_dir: str, to: str):
+    import os
+
+    to = list_strip_and_remove(to.split('/'))
+    r = base_dir
+    for p in to:
+        r = os.path.join(r, p)
+
+    return r
+
+
+def read_to_list(path_to_file: str):
+    try:
+        with open(path_to_file) as f:
+            lines = f.read().splitlines()
+            lines = list_strip_and_remove(lines)
+            return lines
+    except FileNotFoundError:
+        return []
+
+
 def path_join(base_dir: str, paths):
     if type(paths) not in [list, str]:
         raise Exception('Param "paths" must be list or str.')
