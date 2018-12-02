@@ -17,6 +17,59 @@ def sleep(t: int):
     xp.fi(inline=False)
 
 
+def list_unique(source: list):
+    r = []
+    for el in source:
+        if el not in r:
+            r.append(el)
+    return r
+
+
+def list_strip(source):
+    r = []
+    for value in source:
+        if isinstance(value, str):
+            r.append(value.strip())
+        else:
+            r.append(value)
+    return r
+
+
+def list_remove(source: list, els=None):
+    els = els or ['', None]
+    if isinstance(els, list):
+        for el in els:
+            while el in source:
+                source.remove(el)
+    else:
+        while els in source:
+            source.remove(els)
+
+    return source
+
+
+def list_strip_and_remove(source: list, els=None):
+    source = list_strip(source=source)
+    source = list_remove(source=source, els=els)
+    return source
+
+
+def path_join(base_dir: str, paths):
+    if type(paths) not in [list, str]:
+        raise Exception('Param "paths" must be list or str.')
+
+    import os
+
+    if isinstance(paths, str):
+        return os.path.join(base_dir, paths)
+
+    r = base_dir
+    for p in paths:
+        r = os.path.join(r, p)
+
+    return r
+
+
 def get_dict_by_keys(source, keys: list or dict, default_none: bool = True):
     """
     Get a dict, by keys.
@@ -45,7 +98,8 @@ def get_dict_by_keys(source, keys: list or dict, default_none: bool = True):
                 if key in source.keys():
                     r[key] = source[key]
                 else:
-                    if default_none: r[key] = None
+                    if default_none:
+                        r[key] = None
         else:
             for key, value in keys.items():
                 if key in source.keys():
@@ -63,35 +117,6 @@ def get_dict_by_keys(source, keys: list or dict, default_none: bool = True):
             for key, value in keys.items():
                 r[key] = getattr(source, key, value)
     return r
-
-
-def strip_in_list(the_list):
-    r = []
-    for value in the_list:
-        if isinstance(value, str):
-            r.append(value.strip())
-        else:
-            r.append(value)
-    return r
-
-
-def remove_in_list(the_list: list, ele=None):
-    ele = ele or ['', None]
-    if isinstance(ele, list):
-        for e in ele:
-            while e in the_list:
-                the_list.remove(e)
-    else:
-        while ele in the_list:
-            the_list.remove(ele)
-
-    return the_list
-
-
-def strip_and_remove_in_list(the_list: list, ele=None):
-    the_list = strip_in_list(the_list=the_list)
-    the_list = remove_in_list(the_list=the_list, ele=ele)
-    return the_list
 
 
 def x_mix(list_in_list, i=1, target=None):
@@ -128,22 +153,6 @@ def x_mix(list_in_list, i=1, target=None):
     return results
 
 
-def path_join(base_dir: str, paths):
-    if type(paths) not in [list, str]:
-        raise Exception('Param "paths" must be list or str.')
-
-    import os
-
-    if isinstance(paths, str):
-        return os.path.join(base_dir, paths)
-
-    r = base_dir
-    for p in paths:
-        r = os.path.join(r, p)
-
-    return r
-
-
 def orm_row_may_update_by_dict(row, row_dict: dict):
     should_update = False
 
@@ -176,12 +185,12 @@ def orm_row_may_update(row, source, keys):
     return orm_row_may_update_by_dict(row, row_dict)
 
 
-def orm_row_gcu_by_id(orm_model, id: int, source, keys):
+def orm_row_gcu_by_id(orm_model, row_id: int, source, keys):
     """
     Get_or_create, may update
 
     :param orm_model:   orm model
-    :param id:          id
+    :param row_id:      id
     :param source:      source dict/object
     :param keys:        keys/attributes
     :return:            orm row
@@ -192,7 +201,7 @@ def orm_row_gcu_by_id(orm_model, id: int, source, keys):
     )
 
     row, created = orm_model.objects.get_or_create(
-        id=id,
+        id=row_id,
         defaults=row_dict,
     )
 
@@ -200,3 +209,18 @@ def orm_row_gcu_by_id(orm_model, id: int, source, keys):
         return row
 
     return orm_row_may_update_by_dict(row, row_dict)
+
+
+def re_findall(patterns, string: str):
+    import re
+
+    r = []
+    if isinstance(patterns, str) or isinstance(patterns, re.Pattern):
+        r = re.findall(patterns, string)
+    elif isinstance(patterns, list):
+        for pattern in patterns:
+            r.extend(re.findall(pattern, string))
+    else:
+        return r
+
+    return list_unique(r)
