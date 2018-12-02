@@ -224,3 +224,12 @@ def re_findall(patterns, string: str):
         return r
 
     return list_unique(r)
+
+
+def re_find_http_urls(string: str):
+    pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+    return re_findall(pattern, string)
+
+
+def markdown_right(s, width: int = 19):
+    return '`{s}`'.format(s=s.rjust(width))
